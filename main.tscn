@@ -10,3 +10,107 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mkuq4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="clear" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "CLEAR"
+
+[node name="traslate" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "TRANSLATION	
+"
+horizontal_alignment = 1
+
+[node name="dx" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+layout_mode = 2
+text = "dx"
+
+[node name="dy" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+layout_mode = 2
+text = "dy"
+
+[node name="dz" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+layout_mode = 2
+text = "dz"
+
+[node name="rotate" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "ROTATION
+"
+horizontal_alignment = 1
+
+[node name="rot_x" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+layout_mode = 2
+text = "about x"
+
+[node name="rot_y" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+layout_mode = 2
+text = "about y"
+
+[node name="rot_z" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+layout_mode = 2
+text = "about z"
+
+[node name="sclae" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "SCALE"
+horizontal_alignment = 1
+
+[node name="sc_x" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+layout_mode = 2
+text = "x"
+
+[node name="sc_y" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+layout_mode = 2
+text = "y"
+
+[node name="sc_z" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+layout_mode = 2
+text = "z"
+
+[node name="apply" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "APPLY CHANGES"

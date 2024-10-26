@@ -1,5 +1,18 @@
 class_name F extends Node
 
+@onready var dx = $VBoxContainer/MarginContainer/VBoxContainer2/traslate/dx
+@onready var dy = $VBoxContainer/MarginContainer/VBoxContainer2/traslate/dy
+@onready var dz = $VBoxContainer/MarginContainer/VBoxContainer2/traslate/dz
+
+@onready var rot_x = $VBoxContainer/MarginContainer/VBoxContainer2/rotate/rot_x
+@onready var rot_y = $VBoxContainer/MarginContainer/VBoxContainer2/rotate/rot_y
+@onready var rot_z = $VBoxContainer/MarginContainer/VBoxContainer2/rotate/rot_z
+
+@onready var sc_x = $VBoxContainer/MarginContainer/VBoxContainer2/sclae/sc_x
+@onready var sc_y = $VBoxContainer/MarginContainer/VBoxContainer2/sclae/sc_y
+@onready var sc_z = $VBoxContainer/MarginContainer/VBoxContainer2/sclae/sc_z
+
+
 class AffineMatrices:
 
 	static func get_translation_matrix(tx: float, ty: float, tz: float) -> DenseMatrix:
@@ -8,7 +21,38 @@ class AffineMatrices:
 		m.set_element(3, 1, ty)
 		m.set_element(3, 2, tz)
 		return m
+		
+	static func get_rotation_matrix_about_x() -> DenseMatrix:
+		var m = DenseMatrix.identity(4)
+		m.set_element(1, 1, cos(0.0))
+		m.set_element(1, 2, sin(0.0))
+		m.set_element(2, 1, -sin(0.0))
+		m.set_element(2, 2, cos(0.0))
+		return m
+		
+	static func get_rotation_matrix_about_y() -> DenseMatrix:
+		var m = DenseMatrix.identity(4)
+		m.set_element(0, 0, cos(0.0))
+		m.set_element(0, 2, -sin(0.0))
+		m.set_element(2, 0, sin(0.0))
+		m.set_element(2, 2, cos(0.0))
+		return m
 
+	static func get_rotation_matrix_about_z() -> DenseMatrix:
+		var m = DenseMatrix.identity(4)
+		m.set_element(0, 0, cos(0.0))
+		m.set_element(0, 1, sin(0.0))
+		m.set_element(1, 0, -sin(0.0))
+		m.set_element(1, 1, cos(0.0))
+		return m
+
+	static func get_scale_matrix() -> DenseMatrix:		
+		var m = DenseMatrix.identity(4)
+		m.set_element(0, 0, 1)
+		m.set_element(1, 1, 1)
+		m.set_element(2, 2, 1)
+		return m
+							
 class Point:
 	var x: float
 	var y: float
@@ -50,6 +94,22 @@ class Spatial:
 	func translate(tx, ty, tz):
 		var matrix: DenseMatrix = AffineMatrices.get_translation_matrix(tx, ty, tz)
 		apply_matrix(matrix)
+		
+	func rotation_about_x():
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_x()	
+		apply_matrix(matrix)
+		
+	func rotation_about_y():
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_y()	
+		apply_matrix(matrix)	
+		
+	func rotation_about_z():
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z()	
+		apply_matrix(matrix)	
+		
+	func scale():
+		var matrix: DenseMatrix = AffineMatrices.get_scale_matrix()
+		apply_matrix(matrix)	
 		
 class Cube extends Spatial:
 	func _init():
