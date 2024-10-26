@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://ewyokg4i0jk2"]
+[gd_scene load_steps=3 format=3 uid="uid://ewyokg4i0jk2"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_mkuq4"]
+[ext_resource type="PackedScene" uid="uid://dfj5u8qg8ciqa" path="res://line_edit.tscn" id="2_4ej14"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -11,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mkuq4")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,8 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(500, 0)
+[node name="MarginContainer" type="MarginContainer" parent="HBox"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
@@ -29,88 +29,85 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="Menu" type="VBoxContainer" parent="HBox/MarginContainer"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-
-[node name="clear" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 4
 size_flags_vertical = 0
+
+[node name="Clear" type="Button" parent="HBox/MarginContainer/Menu"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "CLEAR"
 
-[node name="traslate" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+[node name="Translate" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/Translate"]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "TRANSLATION	
 "
 horizontal_alignment = 1
 
-[node name="dx" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+[node name="dx" parent="HBox/MarginContainer/Menu/Translate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "dx"
+placeholder_text = "dx"
 
-[node name="dy" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+[node name="dy" parent="HBox/MarginContainer/Menu/Translate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "dy"
+placeholder_text = "dy"
 
-[node name="dz" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/traslate"]
+[node name="dz" parent="HBox/MarginContainer/Menu/Translate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "dz"
+placeholder_text = "dz"
 
-[node name="rotate" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+[node name="Rotate" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/Rotate"]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "ROTATION
 "
 horizontal_alignment = 1
 
-[node name="rot_x" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+[node name="ox" parent="HBox/MarginContainer/Menu/Rotate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "about x"
+placeholder_text = "Ox"
 
-[node name="rot_y" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+[node name="oy" parent="HBox/MarginContainer/Menu/Rotate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "about y"
+placeholder_text = "Oy"
 
-[node name="rot_z" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/rotate"]
+[node name="oz" parent="HBox/MarginContainer/Menu/Rotate" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "about z"
+placeholder_text = "Oz"
 
-[node name="sclae" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+[node name="Scale" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/Scale"]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "SCALE"
 horizontal_alignment = 1
 
-[node name="sc_x" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+[node name="mx" parent="HBox/MarginContainer/Menu/Scale" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "x"
+placeholder_text = "Ox"
 
-[node name="sc_y" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+[node name="my" parent="HBox/MarginContainer/Menu/Scale" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "y"
+placeholder_text = "Oy"
 
-[node name="sc_z" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer2/sclae"]
+[node name="mz" parent="HBox/MarginContainer/Menu/Scale" instance=ExtResource("2_4ej14")]
 layout_mode = 2
-text = "z"
+placeholder_text = "Oz"
 
-[node name="apply" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer2"]
+[node name="Apply" type="Button" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "APPLY CHANGES"
+
+[connection signal="pressed" from="HBox/MarginContainer/Menu/Apply" to="." method="_on_apply_pressed"]

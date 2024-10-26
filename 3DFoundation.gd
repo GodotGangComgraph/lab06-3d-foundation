@@ -46,7 +46,7 @@ class AffineMatrices:
 		m.set_element(1, 1, cos(0.0))
 		return m
 
-	static func get_scale_matrix() -> DenseMatrix:		
+	static func get_scale_matrix() -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 		m.set_element(0, 0, 1)
 		m.set_element(1, 1, 1)
