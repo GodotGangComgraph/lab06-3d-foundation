@@ -70,15 +70,21 @@ class AffineMatrices:
 	static func get_scale_matrix(mx: LineEdit, my: LineEdit, mz: LineEdit) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 		
-		if mx.text == "" or my.text == "" or mz.text == "":
+		if mx.text == "":
 			m.set_element(0, 0, 1)
+		else:
+			m.set_element(0, 0, float(mx.text))
+		
+		if my.text == "":
 			m.set_element(1, 1, 1)
-			m.set_element(2, 2, 1)
-			return m
+		else:
+			m.set_element(1, 1, float(my.text))
 			
-		m.set_element(0, 0, float(mx.text))
-		m.set_element(1, 1, float(my.text))
-		m.set_element(2, 2, float(mz.text))
+		if mz.text == "":
+			m.set_element(2, 2, 1)
+		else:
+			m.set_element(2, 2, float(mz.text))
+		
 		return m
 
 
@@ -87,28 +93,38 @@ class Point:
 	var x: float
 	var y: float
 	var z: float
+	var w: float
 	
 	func _init(_x: float, _y: float, _z: float) -> void:
 		x = _x
 		y = _y
 		z = _z
-		
+		w = 1
+	
+	func duplicate() -> Point:
+		var p = Point.new(0, 0, 0)
+		p.x = x
+		p.y = y
+		p.z = z
+		p.w = w
+		return p
+
 	func apply_matrix(matrix: DenseMatrix):
 		var v = get_vector()
 		var vnew = v.multiply_dense(matrix)
-		x = vnew.get_element(0, 0) / vnew.get_element(0, 3) 
-		y = vnew.get_element(0, 1) / vnew.get_element(0, 3)
-		z = vnew.get_element(0, 2) / vnew.get_element(0, 3)
-		pass
+		x = vnew.get_element(0, 0)
+		y = vnew.get_element(0, 1)
+		z = vnew.get_element(0, 2)
+		w = vnew.get_element(0, 3)
 		
 	func get_vector() -> DenseMatrix:
-		return DenseMatrix.from_packed_array([x, y, z, 1], 1, 4)
+		return DenseMatrix.from_packed_array([x, y, z, w], 1, 4)
 	
 	func get_vec2d():
-		return Vector2(x, y)
+		return Vector2(x/w, y/w)
 	
 	func get_vec3d():
-		return Vector3(x, y, z)
+		return Vector3(x/w, y/w, z/w)
 
 class Spatial:
 	var points: Array[Point]

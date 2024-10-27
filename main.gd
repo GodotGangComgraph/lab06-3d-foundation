@@ -23,9 +23,8 @@ var frame_count = 0
 @onready var mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
 
 func _ready() -> void:
-	tetrahedron.translate(200, 200, 200)
-	cube.translate(200, 200, 200)
-	axis.translate(200, 200, 200)
+	cube.translate(200, 0, 0)
+	axis.translate(200, 0, 0)
 	Engine.max_fps = 20
 
 func _process(delta: float) -> void:
@@ -39,39 +38,32 @@ func _process(delta: float) -> void:
 
 func draw_object(obj: F.Spatial):
 	for edge in obj.edges:
-		var p1: F.Point = obj.points[edge.x]
-		var p2: F.Point = obj.points[edge.y]
+		var p1: F.Point = obj.points[edge.x].duplicate()
+		var p2: F.Point = obj.points[edge.y].duplicate()
 		
-		var axonometric_matrix = F.AffineMatrices.get_perspective_matrix(-1000)
+		var axonometric_matrix = F.AffineMatrices.get_axonometric_matrix(35, 45)
 		
 		p1.apply_matrix(axonometric_matrix)
 		p2.apply_matrix(axonometric_matrix)
+		
 		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.RED, 0.5, true)
 
 func draw_axis(axis: F.Axis):
-	var perspective_matrix = F.AffineMatrices.get_perspective_matrix(-1000)
-	var p1: F.Point = axis.points[axis.edges[0].x]
-	var p2: F.Point = axis.points[axis.edges[0].y]
-	p1.apply_matrix(perspective_matrix)
-	p2.apply_matrix(perspective_matrix)
-	draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.RED, 0.5, true)
-	
-	p1 = axis.points[axis.edges[1].x]
-	p2 = axis.points[axis.edges[1].y]
-	p1.apply_matrix(perspective_matrix)
-	p2.apply_matrix(perspective_matrix)
-	draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.GREEN, 0.5, true)
-	
-	p1 = axis.points[axis.edges[2].x]
-	p2 = axis.points[axis.edges[2].y]
-	p1.apply_matrix(perspective_matrix)
-	p2.apply_matrix(perspective_matrix)
-	draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.BLUE, 0.5, true)
+	var isometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
+	for edge in axis.edges:
+		var p1 = axis.points[edge.x].duplicate()
+		var p2 = axis.points[edge.y].duplicate()
+		
+		p1.apply_matrix(isometric_matrix)
+		p2.apply_matrix(isometric_matrix)
+		
+		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.GREEN, 0.5, true)
 
 	
 func _draw():
 	#draw_object(tetrahedron)
 	draw_object(cube)
+	#draw_axis(axis)
 
 func _on_apply_pressed() -> void:
 	var translate_matrix = F.AffineMatrices.get_translation_matrix(float(dx.text),float(dy.text),float(dz.text))
@@ -85,3 +77,7 @@ func _on_apply_pressed() -> void:
 	cube.apply_matrix(rotate_matrix_z)
 	cube.apply_matrix(scale_matrix)
 	queue_redraw()
+
+
+func _on_clear_pressed() -> void:
+	get_tree().reload_current_scene()
