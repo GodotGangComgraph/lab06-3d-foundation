@@ -67,10 +67,10 @@ func _draw():
 
 func _on_apply_pressed() -> void:
 	var translate_matrix = F.AffineMatrices.get_translation_matrix(float(dx.text),float(dy.text),float(dz.text))
-	var rotate_matrix_x = F.AffineMatrices.get_rotation_matrix_about_x(ox)
-	var rotate_matrix_y = F.AffineMatrices.get_rotation_matrix_about_x(oy)
-	var rotate_matrix_z = F.AffineMatrices.get_rotation_matrix_about_x(oz)
-	var scale_matrix = F.AffineMatrices.get_scale_matrix(mx, my, mz)
+	var rotate_matrix_x = F.AffineMatrices.get_rotation_matrix_about_x(float(ox.text))
+	var rotate_matrix_y = F.AffineMatrices.get_rotation_matrix_about_x(float(oy.text))
+	var rotate_matrix_z = F.AffineMatrices.get_rotation_matrix_about_x(float(oz.text))
+	var scale_matrix = F.AffineMatrices.get_scale_matrix(float(mx.text),float(my.text), float(mz.text))
 	cube.apply_matrix(translate_matrix)
 	cube.apply_matrix(rotate_matrix_x)
 	cube.apply_matrix(rotate_matrix_y)

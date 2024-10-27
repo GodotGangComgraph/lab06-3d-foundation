@@ -28,10 +28,10 @@ class AffineMatrices:
 		m.set_element(3, 2, tz)
 		return m
 		
-	static func get_rotation_matrix_about_x(ox: LineEdit) -> DenseMatrix:
+	static func get_rotation_matrix_about_x(ox: float) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 			
-		var rot_deg_x = deg_to_rad(float(ox.text))
+		var rot_deg_x = deg_to_rad(ox)
 		var sin_x = sin(rot_deg_x)
 		var cos_x = cos(rot_deg_x)
 		
@@ -41,10 +41,10 @@ class AffineMatrices:
 		m.set_element(2, 2, cos_x)
 		return m
 		
-	static func get_rotation_matrix_about_y(oy: LineEdit) -> DenseMatrix:
+	static func get_rotation_matrix_about_y(oy: float) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 			
-		var rot_deg_y = deg_to_rad(float(oy.text))
+		var rot_deg_y = deg_to_rad(oy)
 		var sin_y = sin(rot_deg_y)
 		var cos_y = cos(rot_deg_y)
 		
@@ -54,10 +54,10 @@ class AffineMatrices:
 		m.set_element(2, 2, cos_y)
 		return m
 
-	static func get_rotation_matrix_about_z(oz: LineEdit) -> DenseMatrix:
+	static func get_rotation_matrix_about_z(oz: float) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 		
-		var rot_deg_z = deg_to_rad(float(oz.text))
+		var rot_deg_z = deg_to_rad(oz)
 		var sin_z = sin(rot_deg_z)
 		var cos_z = cos(rot_deg_z)
 		
@@ -67,23 +67,23 @@ class AffineMatrices:
 		m.set_element(1, 1, cos_z)
 		return m
 
-	static func get_scale_matrix(mx: LineEdit, my: LineEdit, mz: LineEdit) -> DenseMatrix:
+	static func get_scale_matrix(mx: float, my: float, mz: float) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 		
-		if mx.text == "":
+		if mx == 0:
 			m.set_element(0, 0, 1)
 		else:
-			m.set_element(0, 0, float(mx.text))
+			m.set_element(0, 0, mx)
 		
-		if my.text == "":
+		if my == 0:
 			m.set_element(1, 1, 1)
 		else:
-			m.set_element(1, 1, float(my.text))
+			m.set_element(1, 1, my)
 			
-		if mz.text == "":
+		if mz == 0:
 			m.set_element(2, 2, 1)
 		else:
-			m.set_element(2, 2, float(mz.text))
+			m.set_element(2, 2, mz)
 		
 		return m
 
@@ -148,19 +148,19 @@ class Spatial:
 		var matrix: DenseMatrix = AffineMatrices.get_translation_matrix(tx, ty, tz)
 		apply_matrix(matrix)
 		
-	func rotation_about_x(ox: LineEdit):
+	func rotation_about_x(ox: float):
 		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_x(ox)	
 		apply_matrix(matrix)
 		
-	func rotation_about_y(oy: LineEdit):
+	func rotation_about_y(oy: float):
 		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_y(oy)	
 		apply_matrix(matrix)	
 		
-	func rotation_about_z(oz: LineEdit):
+	func rotation_about_z(oz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)	
 		apply_matrix(matrix)	
 		
-	func scale(mx: LineEdit, my: LineEdit, mz: LineEdit):
+	func scale(mx: float, my: float, mz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_scale_matrix(mx, my, mz)
 		apply_matrix(matrix)	
 		
