@@ -260,7 +260,14 @@ class Spatial:
 	func scale_(mx: float, my: float, mz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_scale_matrix(mx, my, mz)
 		apply_matrix(matrix)
-		
+	
+	func miror(mx: float, my: float, mz: float):
+		var matrix = DenseMatrix.identity(4)
+		matrix.set_element(0, 0, mx)
+		matrix.set_element(1, 1, my)
+		matrix.set_element(2, 2, mz)
+		apply_matrix(matrix)
+	
 class Cube extends Spatial:
 	func _init():
 		var edge_length = 100

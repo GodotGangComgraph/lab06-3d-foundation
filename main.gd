@@ -37,9 +37,10 @@ var frame_count = 0
 @onready var scale_my: LineEdit = $HBox/MarginContainer/Menu/Scale/my
 @onready var scale_mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
 
-var world_center: Vector3 = Vector3(200, 0, 0)
+@onready var world_center: Vector3 = Vector3(300, 0, 0)
 
 func _ready() -> void:
+	
 	cube.translate(world_center.x, world_center.y, world_center.z)
 	tetrahedron.translate(world_center.x, world_center.y, world_center.z)
 	octahedron.translate(world_center.x * 3 / 4,  world_center.y * 3 / 4, world_center.z * 3 / 4)
@@ -52,7 +53,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	return
+	#return
 	#if (frame_count > 100):
 	#	return
 	#frame_count += 1
@@ -119,15 +120,18 @@ func _on_option_button_item_selected(index: int) -> void:
 
 
 func _on_mirror_ox_pressed() -> void:
-	pass
+	spatial.miror(-1, 1, 1)
+	queue_redraw()
 
 
 func _on_mirror_oy_pressed() -> void:
-	pass # Replace with function body.
+	spatial.miror(1, -1, 1)
+	queue_redraw()
 
 
 func _on_mirror_oz_pressed() -> void:
-	pass # Replace with function body.
+	spatial.miror(1, 1, -1)
+	queue_redraw()
 
 
 func _on_apply_trans_pressed() -> void:
@@ -173,6 +177,7 @@ func _on_apply_scale_pressed() -> void:
 	var mz: float = vec3.z
 	
 	spatial.scale_(mx, my, mz)
+	queue_redraw()
 
 
 func _on_apply_scale_center_pressed() -> void:

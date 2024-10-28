@@ -184,13 +184,19 @@ text = "MIRROR"
 horizontal_alignment = 1
 
 [node name="ox" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
+custom_minimum_size = Vector2(66, 50)
 layout_mode = 2
+text = "XY"
 
 [node name="oy" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
+custom_minimum_size = Vector2(66, 50)
 layout_mode = 2
+text = "XZ"
 
 [node name="oz" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
+custom_minimum_size = Vector2(66, 50)
 layout_mode = 2
+text = "YZ"
 
 [node name="MarginContainer2" type="MarginContainer" parent="HBox"]
 layout_mode = 2
