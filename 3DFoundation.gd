@@ -100,6 +100,14 @@ class Point:
 		y = _y
 		z = _z
 		w = 1
+		
+	static func from_vec3d(_p: Vector3) -> Point:
+		var p: Point
+		p.x = _p.x
+		p.y = _p.y
+		p.z = _p.z
+		p.w = 1
+		return p
 	
 	func duplicate() -> Point:
 		var p = Point.new(0, 0, 0)
@@ -139,6 +147,12 @@ class Spatial:
 	func clear():
 		points.clear()
 		edges.clear()
+	
+	func get_middle():
+		var mid: Vector3 = Vector3.ZERO
+		for point in points:
+			mid += point.get_vec3d()
+		return Point.from_vec3d(mid)
 	
 	func apply_matrix(matrix: DenseMatrix):
 		for i in range(points.size()):

@@ -84,6 +84,64 @@ placeholder_text = "Oy"
 layout_mode = 2
 placeholder_text = "Oz"
 
+[node name="RotateCenter" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/RotateCenter"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "ROTATION
+(CENTER)
+"
+horizontal_alignment = 1
+
+[node name="ox" parent="HBox/MarginContainer/Menu/RotateCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Ox"
+
+[node name="oy" parent="HBox/MarginContainer/Menu/RotateCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oy"
+
+[node name="oz" parent="HBox/MarginContainer/Menu/RotateCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oz"
+
+[node name="RotateLine" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/RotateLine"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "ROTATION
+(LINE)
+"
+horizontal_alignment = 1
+
+[node name="x1" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "x1"
+
+[node name="y1" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "y1"
+
+[node name="z1" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "z1"
+
+[node name="x2" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "x2"
+
+[node name="y2" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "y2"
+
+[node name="z2" parent="HBox/MarginContainer/Menu/RotateLine" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "z2"
+
 [node name="Scale" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 
@@ -102,6 +160,49 @@ layout_mode = 2
 placeholder_text = "Oy"
 
 [node name="mz" parent="HBox/MarginContainer/Menu/Scale" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oz"
+
+[node name="ScaleCenter" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/ScaleCenter"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "SCALE
+(CENTER)"
+horizontal_alignment = 1
+
+[node name="mx" parent="HBox/MarginContainer/Menu/ScaleCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Ox"
+
+[node name="my" parent="HBox/MarginContainer/Menu/ScaleCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oy"
+
+[node name="mz" parent="HBox/MarginContainer/Menu/ScaleCenter" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oz"
+
+[node name="Mirror" type="HBoxContainer" parent="HBox/MarginContainer/Menu"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBox/MarginContainer/Menu/Mirror"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "MIRROR"
+horizontal_alignment = 1
+
+[node name="ox" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Ox"
+
+[node name="oy" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
+layout_mode = 2
+placeholder_text = "Oy"
+
+[node name="oz" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
 layout_mode = 2
 placeholder_text = "Oz"
 
