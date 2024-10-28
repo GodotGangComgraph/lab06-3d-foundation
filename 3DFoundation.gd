@@ -40,7 +40,23 @@ class AffineMatrices:
 		m.set_element(2, 1, -sin_x)
 		m.set_element(2, 2, cos_x)
 		return m
+	
+	static func get_rotation_x_by_sin_cos(sin_x: float, cos_x: float) -> DenseMatrix:
+		var m = DenseMatrix.identity(4)
+		m.set_element(1, 1, cos_x)
+		m.set_element(1, 2, sin_x)
+		m.set_element(2, 1, -sin_x)
+		m.set_element(2, 2, cos_x)
+		return m
 		
+	static func get_rotation_y_by_sin_cos(sin_y: float, cos_y: float) -> DenseMatrix:
+		var m = DenseMatrix.identity(4)
+		m.set_element(0, 0, cos_y)
+		m.set_element(0, 2, -sin_y)
+		m.set_element(2, 0, sin_y)
+		m.set_element(2, 2, cos_y)
+		return m
+	
 	static func get_rotation_matrix_about_y(oy: float) -> DenseMatrix:
 		var m = DenseMatrix.identity(4)
 			
@@ -86,8 +102,21 @@ class AffineMatrices:
 			m.set_element(2, 2, mz)
 		
 		return m
-
-
+	
+	static func get_line_rotate_matrix(l, m, n, sin_phi, cos_phi) -> DenseMatrix:
+		var matr = DenseMatrix.identity(4)
+		matr.set_element(0, 0, l*l+cos_phi*(1-l*l))
+		matr.set_element(0, 1, l*(1-cos_phi)*m+n*sin_phi)
+		matr.set_element(0, 2, l*(1-cos_phi)*n-m*sin_phi)
+		matr.set_element(1, 0, l*(1-cos_phi)*m-n*sin_phi)
+		matr.set_element(1, 1, m*m+cos_phi*(1-m*m))
+		matr.set_element(1, 2, m*(1-cos_phi)*n+l*sin_phi)
+		matr.set_element(2, 0, l*(1-cos_phi)*n+m*sin_phi)
+		matr.set_element(2, 1, m*(1-cos_phi)*n-l*sin_phi)
+		matr.set_element(2, 2, n*n+cos_phi*(1-n*n))
+		return matr
+		
+		
 class Point:
 	var x: float
 	var y: float
@@ -119,6 +148,22 @@ class Point:
 		y = vnew.get_element(0, 1)
 		z = vnew.get_element(0, 2)
 		w = vnew.get_element(0, 3)
+	
+	func translate(tx: float, ty: float, tz: float):
+		var matrix = AffineMatrices.get_translation_matrix(tx, ty, tz)
+		apply_matrix(matrix)
+	
+	func rotate_ox(ox: float):
+		var matrix = AffineMatrices.get_rotation_matrix_about_x(ox)
+		apply_matrix(matrix)
+	
+	func rotate_oy(oy: float):
+		var matrix = AffineMatrices.get_rotation_matrix_about_y(oy)
+		apply_matrix(matrix)
+	
+	func rotate_oz(oz: float):
+		var matrix = AffineMatrices.get_rotation_matrix_about_z(oz)
+		apply_matrix(matrix)
 		
 	func get_vector() -> DenseMatrix:
 		return DenseMatrix.from_packed_array([x, y, z, w], 1, 4)
@@ -147,7 +192,7 @@ class Spatial:
 		var mid: Vector3 = Vector3.ZERO
 		for point in points:
 			mid += point.get_vec3d()
-		return Point.from_vec3d(mid)
+		return Point.from_vec3d(mid / points.size())
 	
 	func apply_matrix(matrix: DenseMatrix):
 		for i in range(points.size()):
@@ -169,10 +214,49 @@ class Spatial:
 		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)
 		apply_matrix(matrix)
 	
-	func rotation_about_center(oz: float):
-		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)
+	func rotation_about_center(p: Point, ox: float, oy: float, oz: float):
+		translate(-p.x, -p.y, -p.z)
+		rotation_about_x(float(ox))
+		rotation_about_y(float(oy))
+		rotation_about_z(float(oz))
+		translate(p.x, p.y, p.z)
+	
+	func rotation_about_line(p: Point, vec: Vector3, deg: float):
+		deg = deg_to_rad(deg)
+		vec = vec.normalized()
+		
+		var n = vec.z
+		var m = vec.y
+		var l = vec.x
+		var d = sqrt(m * m + n * n)
+		var matrix = AffineMatrices.get_line_rotate_matrix(l, m, n, sin(deg), cos(deg))
+		apply_matrix(matrix)
+	'''	translate(-p.x, -p.y, -p.z)
+		
+		var line_point = Point.from_vec3d(vec)
+		var n = vec.z
+		var m = vec.y
+		var l = vec.x
+		var d = sqrt(m * m + n * n)
+		var matrix = AffineMatrices.get_rotation_x_by_sin_cos(m/d, n/d)
+		apply_matrix(matrix)
+		matrix = AffineMatrices.get_rotation_y_by_sin_cos(-d, l)
+		apply_matrix(matrix)
+		rotation_about_z(deg)
+		
+		matrix = AffineMatrices.get_rotation_y_by_sin_cos(d, l)
 		apply_matrix(matrix)
 		
+		matrix = AffineMatrices.get_rotation_y_by_sin_cos(-m/d, n/d)
+		apply_matrix(matrix)
+		
+		translate(p.x, p.y, p.z)'''
+	
+	func scale_about_center(p: Point, ox: float, oy: float, oz: float):
+		translate(-p.x, -p.y, -p.z)
+		scale_(ox, oy, oz)
+		translate(p.x, p.y, p.z)
+	
 	func scale_(mx: float, my: float, mz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_scale_matrix(mx, my, mz)
 		apply_matrix(matrix)
