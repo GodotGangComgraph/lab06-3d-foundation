@@ -2,32 +2,63 @@ extends Control
 
 
 var edge_length = 100
+
 var cube = F.Cube.new()
 var tetrahedron = F.Tetrahedron.new()
+var octahedron = F.Octahedron.new()
+var icosahedron = F.Icosahedron.new()
+#var dodecahedron = F.Dodecahedron.new()
 var axis = F.Axis.new()
+var spatial = cube
+
 var frame_count = 0
 
 ## Translation values
-@onready var dx: LineEdit = $HBox/MarginContainer/Menu/Translate/dx
-@onready var dy: LineEdit = $HBox/MarginContainer/Menu/Translate/dy
-@onready var dz: LineEdit = $HBox/MarginContainer/Menu/Translate/dz
+@onready var translate_dx: LineEdit = $HBox/MarginContainer/Menu/Translate/dx
+@onready var translate_dy: LineEdit = $HBox/MarginContainer/Menu/Translate/dy
+@onready var translate_dz: LineEdit = $HBox/MarginContainer/Menu/Translate/dz
 
 ## Rotation values (don't forget deg_to_rad)
-@onready var ox: LineEdit = $HBox/MarginContainer/Menu/Rotate/ox
-@onready var oy: LineEdit = $HBox/MarginContainer/Menu/Rotate/oy
-@onready var oz: LineEdit = $HBox/MarginContainer/Menu/Rotate/oz
+@onready var rotate_ox: LineEdit = $HBox/MarginContainer/Menu/Rotate/ox
+@onready var rotate_oy: LineEdit = $HBox/MarginContainer/Menu/Rotate/oy
+@onready var rotate_oz: LineEdit = $HBox/MarginContainer/Menu/Rotate/oz
+
+## Rotation Center values
+@onready var rotate_center_ox: LineEdit = $HBox/MarginContainer/Menu/RotateCenter/ox
+@onready var rotate_center_oy: LineEdit = $HBox/MarginContainer/Menu/RotateCenter/oy
+@onready var rotate_center_oz: LineEdit = $HBox/MarginContainer/Menu/RotateCenter/oz
+
+## Rotation Line values
+@onready var rotate_line_x_1: LineEdit = $HBox/MarginContainer/Menu/RotateLine/x1
+@onready var rotate_line_y_1: LineEdit = $HBox/MarginContainer/Menu/RotateLine/y1
+@onready var rotate_line_z_1: LineEdit = $HBox/MarginContainer/Menu/RotateLine/z1
+@onready var rotate_line_x_2: LineEdit = $HBox/MarginContainer/Menu/RotateLine/x2
+@onready var rotate_line_y_2: LineEdit = $HBox/MarginContainer/Menu/RotateLine/y2
+@onready var rotate_line_z_2: LineEdit = $HBox/MarginContainer/Menu/RotateLine/z2
 
 ## Scale values
-@onready var mx: LineEdit = $HBox/MarginContainer/Menu/Scale/mx
-@onready var my: LineEdit = $HBox/MarginContainer/Menu/Scale/my
-@onready var mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
+@onready var scale_mx: LineEdit = $HBox/MarginContainer/Menu/Scale/mx
+@onready var scale_my: LineEdit = $HBox/MarginContainer/Menu/Scale/my
+@onready var scale_mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
+
+## ScaleCenter
+@onready var scale_center_mx: LineEdit = $HBox/MarginContainer/Menu/ScaleCenter/mx
+@onready var scale_center_my: LineEdit = $HBox/MarginContainer/Menu/ScaleCenter/my
+@onready var scale_center_mz: LineEdit = $HBox/MarginContainer/Menu/ScaleCenter/mz
 
 func _ready() -> void:
 	cube.translate(200, 0, 0)
-	axis.translate(200, 0, 0)
+	tetrahedron.translate(200, 0, 0)
+	octahedron.translate(150, 0, 0)
+	icosahedron.translate(100, 0, 0)
+	for point in icosahedron.points:
+		print(point)
+		
+	#dodecahedron.translate(200, 0, 0)
 	Engine.max_fps = 20
 
-func _process(delta: float) -> void:
+
+func _process(_delta: float) -> void:
 	return
 	if (frame_count > 100):
 		return
@@ -35,6 +66,7 @@ func _process(delta: float) -> void:
 	tetrahedron.translate(1, 1, 1)
 	cube.translate(-1, -1, -1)
 	queue_redraw()
+
 
 func draw_object(obj: F.Spatial):
 	for edge in obj.edges:
@@ -48,6 +80,7 @@ func draw_object(obj: F.Spatial):
 		
 		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.RED, 0.5, true)
 
+
 func draw_axis(axis: F.Axis):
 	var isometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
 	for edge in axis.edges:
@@ -59,25 +92,44 @@ func draw_axis(axis: F.Axis):
 		
 		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.GREEN, 0.5, true)
 
-	
+
 func _draw():
-	#draw_object(tetrahedron)
-	draw_object(cube)
+	draw_object(spatial)
 	#draw_axis(axis)
 
+
 func _on_apply_pressed() -> void:
-	var translate_matrix = F.AffineMatrices.get_translation_matrix(float(dx.text),float(dy.text),float(dz.text))
-	var rotate_matrix_x = F.AffineMatrices.get_rotation_matrix_about_x(float(ox.text))
-	var rotate_matrix_y = F.AffineMatrices.get_rotation_matrix_about_x(float(oy.text))
-	var rotate_matrix_z = F.AffineMatrices.get_rotation_matrix_about_x(float(oz.text))
-	var scale_matrix = F.AffineMatrices.get_scale_matrix(float(mx.text),float(my.text), float(mz.text))
-	cube.apply_matrix(translate_matrix)
-	cube.apply_matrix(rotate_matrix_x)
-	cube.apply_matrix(rotate_matrix_y)
-	cube.apply_matrix(rotate_matrix_z)
-	cube.apply_matrix(scale_matrix)
+	spatial.translate(float(translate_dx.text), float(translate_dy.text), float(translate_dz.text))
+	spatial.rotation_about_x(float(rotate_ox.text))
+	spatial.rotation_about_y(float(rotate_oy.text))
+	spatial.rotation_about_z(float(rotate_oz.text))
+	spatial.rotate_about_center(float(rotate_ox.text))
+	spatial.scale_(float(scale_mx.text), float(scale_my.text), float(scale_mz.text))
+	
 	queue_redraw()
 
 
 func _on_clear_pressed() -> void:
 	get_tree().reload_current_scene()
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	match index:
+		0: spatial = cube
+		1: spatial = tetrahedron
+		2: spatial = octahedron
+		3: spatial = icosahedron
+		#4: spatial = dodecahedron
+	queue_redraw()
+
+
+func _on_mirror_ox_pressed() -> void:
+	pass
+
+
+func _on_mirror_oy_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_mirror_oz_pressed() -> void:
+	pass # Replace with function body.

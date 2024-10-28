@@ -88,7 +88,6 @@ class AffineMatrices:
 		return m
 
 
-
 class Point:
 	var x: float
 	var y: float
@@ -100,13 +99,9 @@ class Point:
 		y = _y
 		z = _z
 		w = 1
-		
+	
 	static func from_vec3d(_p: Vector3) -> Point:
-		var p: Point
-		p.x = _p.x
-		p.y = _p.y
-		p.z = _p.z
-		p.w = 1
+		var p = Point.new(0,0,0)
 		return p
 	
 	func duplicate() -> Point:
@@ -157,35 +152,41 @@ class Spatial:
 	func apply_matrix(matrix: DenseMatrix):
 		for i in range(points.size()):
 			points[i].apply_matrix(matrix)
-		
+	
 	func translate(tx: float, ty: float, tz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_translation_matrix(tx, ty, tz)
 		apply_matrix(matrix)
 		
 	func rotation_about_x(ox: float):
-		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_x(ox)	
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_x(ox)
 		apply_matrix(matrix)
 		
 	func rotation_about_y(oy: float):
-		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_y(oy)	
-		apply_matrix(matrix)	
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_y(oy)
+		apply_matrix(matrix)
 		
 	func rotation_about_z(oz: float):
-		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)	
-		apply_matrix(matrix)	
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)
+		apply_matrix(matrix)
+	
+	func rotation_about_center(oz: float):
+		var matrix: DenseMatrix = AffineMatrices.get_rotation_matrix_about_z(oz)
+		apply_matrix(matrix)
 		
-	func scale(mx: float, my: float, mz: float):
+	func scale_(mx: float, my: float, mz: float):
 		var matrix: DenseMatrix = AffineMatrices.get_scale_matrix(mx, my, mz)
-		apply_matrix(matrix)	
+		apply_matrix(matrix)
 		
 class Cube extends Spatial:
 	func _init():
-		var l = 100
+		var edge_length = 100
+		var l = edge_length/2
+		
 		var lst_points = [
-			Point.new(-l, -l, -l)	, Point.new(l, -l, -l),
-			Point.new(l, l, -l)		, Point.new(-l, l, -l),
-			Point.new(-l, -l, l)	, Point.new(l, -l, l), 
-			Point.new(l, l, l)		, Point.new(-l, l, l)
+			Point.new(-l, -l, -l),	Point.new(l, -l, -l),
+			Point.new(l, l, -l),		Point.new(-l, l, -l),
+			Point.new(-l, -l, l),		Point.new(l, -l, l), 
+			Point.new(l, l, l),		Point.new(-l, l, l)
 		]
 		var edge_pairs = [
 			Vector2i(0, 1), Vector2i(1, 2), Vector2i(2, 3), Vector2i(3, 0),
@@ -198,7 +199,8 @@ class Cube extends Spatial:
 
 class Tetrahedron extends Spatial:
 	func _init():
-		var l = 100
+		var edge_length = 100
+		var l = edge_length/2
 		
 		## THIS IS NOT POINTS FROM SPATIAL
 		var lst_points = [
@@ -216,6 +218,61 @@ class Tetrahedron extends Spatial:
 		
 		for pair in edge_pairs:
 			add_edge(lst_points[pair.x], lst_points[pair.y])
+
+
+class Octahedron extends Spatial:
+	func _init():
+		var edge_length = 100
+		var l = edge_length/sqrt(2)
+		
+		var lst_points = [
+			Point.new(l, 0, 0),   # Вершина по оси X
+			Point.new(-l, 0, 0),  # Вершина по оси -X
+			Point.new(0, l, 0),   # Вершина по оси Y
+			Point.new(0, -l, 0),  # Вершина по оси -Y
+			Point.new(0, 0, l),   # Вершина по оси Z
+			Point.new(0, 0, -l)   # Вершина по оси -Z
+		]
+		
+		var edge_pairs = [
+			Vector2i(0, 2), Vector2i(0, 3), Vector2i(0, 4), Vector2i(0, 5),
+			Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 5),
+			Vector2i(2, 4), Vector2i(2, 5), Vector2i(3, 4), Vector2i(3, 5)
+		]
+		
+		for pair in edge_pairs:
+			add_edge(lst_points[pair.x], lst_points[pair.y])
+
+
+class Icosahedron extends Spatial:
+	func _init():
+		var l = 100  # Высота цилиндра и длина вдоль оси z
+		var r = l * sqrt(2) / 2  # Радиус вписанного цилиндра
+		
+		# Координаты 12 вершин икосаэдра
+		var lst_points = [
+			Point.new(r, 0, l/2),  Point.new(0, r, l/2),
+			Point.new(-r, 0, l/2),  Point.new(0, -r, l/2),
+			Point.new(r, r, 0), Point.new(-r, r, 0),
+			Point.new(-r, -r, 0), Point.new(r, -r, 0),
+
+	# Нижний уровень
+			Point.new(r, 0, -l/2), Point.new(0, r, -l/2),
+			Point.new(-r, 0, -l/2), Point.new(0, -r, -l/2)
+		]
+		
+		# Определяем рёбра между вершинами
+		var edge_pairs = [
+			Vector2i(0, 1), Vector2i(1, 2), Vector2i(2, 3), Vector2i(3, 0),  # Верхний уровень
+			Vector2i(4, 5), Vector2i(5, 6), Vector2i(6, 7), Vector2i(7, 4),  # Средний уровень
+			Vector2i(8, 9), Vector2i(9, 10), Vector2i(10, 11), Vector2i(11, 8), # Нижний уровень
+			Vector2i(0, 4), Vector2i(1, 5), Vector2i(2, 6), Vector2i(3, 7),  # Верхний - Средний
+			Vector2i(8, 4), Vector2i(9, 5), Vector2i(10, 6), Vector2i(11, 7)  # Нижний - Средний
+		]
+		
+		for pair in edge_pairs:
+			add_edge(lst_points[pair.x], lst_points[pair.y])
+
 
 class Axis extends Spatial:
 	func _init():

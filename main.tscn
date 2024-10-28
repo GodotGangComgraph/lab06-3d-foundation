@@ -194,22 +194,47 @@ layout_mode = 2
 text = "MIRROR"
 horizontal_alignment = 1
 
-[node name="ox" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
+[node name="ox" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
 layout_mode = 2
-placeholder_text = "Ox"
 
-[node name="oy" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
+[node name="oy" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
 layout_mode = 2
-placeholder_text = "Oy"
 
-[node name="oz" parent="HBox/MarginContainer/Menu/Mirror" instance=ExtResource("2_4ej14")]
+[node name="oz" type="Button" parent="HBox/MarginContainer/Menu/Mirror"]
 layout_mode = 2
-placeholder_text = "Oz"
 
 [node name="Apply" type="Button" parent="HBox/MarginContainer/Menu"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "APPLY CHANGES"
 
+[node name="MarginContainer2" type="MarginContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="OptionButton" type="OptionButton" parent="HBox/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+selected = 0
+item_count = 5
+popup/item_0/text = "Hexahedron"
+popup/item_1/text = "Tetrahedron"
+popup/item_1/id = 1
+popup/item_2/text = "Octahedron"
+popup/item_2/id = 2
+popup/item_3/text = "Icosahedron"
+popup/item_3/id = 3
+popup/item_4/text = "Dodecahedron"
+popup/item_4/id = 4
+
 [connection signal="pressed" from="HBox/MarginContainer/Menu/Clear" to="." method="_on_clear_pressed"]
+[connection signal="pressed" from="HBox/MarginContainer/Menu/Mirror/ox" to="." method="_on_mirror_ox_pressed"]
+[connection signal="pressed" from="HBox/MarginContainer/Menu/Mirror/oy" to="." method="_on_mirror_oy_pressed"]
+[connection signal="pressed" from="HBox/MarginContainer/Menu/Mirror/oz" to="." method="_on_mirror_oz_pressed"]
 [connection signal="pressed" from="HBox/MarginContainer/Menu/Apply" to="." method="_on_apply_pressed"]
+[connection signal="item_selected" from="HBox/MarginContainer2/OptionButton" to="." method="_on_option_button_item_selected"]
