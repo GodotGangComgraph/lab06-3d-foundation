@@ -6,8 +6,8 @@ var edge_length = 100
 var cube = F.Cube.new()
 var tetrahedron = F.Tetrahedron.new()
 var octahedron = F.Octahedron.new()
-#var icosahedron = F.Icosahedron.new()
-#var dodecahedron = F.Dodecahedron.new()
+var icosahedron = F.Icosahedron.new()
+var dodecahedron = F.Dodecahedron.new()
 var axis = F.Axis.new()
 var spatial = cube
 
@@ -15,8 +15,13 @@ var axonometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
 var perspective_matrix = F.AffineMatrices.get_perspective_matrix(-300)
 var projection_matrix = axonometric_matrix
 
+var is_auto_rotating = true
 
 var frame_count = 0
+
+var hue_shift = 0.0
+var color_speed = 0.1
+
 
 ## Translation values
 @onready var translate_dx: LineEdit = $HBox/MarginContainer/Menu/Translate/dx
@@ -42,13 +47,14 @@ var frame_count = 0
 @onready var scale_my: LineEdit = $HBox/MarginContainer/Menu/Scale/my
 @onready var scale_mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
 
-@onready var world_center: Vector3 = Vector3(300, 0, 0)
+@onready var world_center: Vector3 = Vector3(450, 300, 200)
 
 func _ready() -> void:
-	
 	cube.translate(world_center.x, world_center.y, world_center.z)
 	tetrahedron.translate(world_center.x, world_center.y, world_center.z)
 	octahedron.translate(world_center.x, world_center.y, world_center.z)
+	icosahedron.translate(world_center.x, world_center.y, world_center.z)
+	dodecahedron.translate(world_center.x, world_center.y, world_center.z)
 	#icosahedron.translate(100, 0, 0)
 	#for point in icosahedron.points:
 	#	print(point)
@@ -57,8 +63,13 @@ func _ready() -> void:
 	Engine.max_fps = 20
 
 
-func _process(_delta: float) -> void:
-	#return
+func _process(delta: float) -> void:
+	if not is_auto_rotating:
+		return
+	
+	hue_shift += color_speed * delta
+	hue_shift = fmod(hue_shift, 1.0)
+	
 	var vec = spatial.get_middle()
 	spatial.rotation_about_center(vec, 1, 1, 1)
 	
@@ -78,14 +89,23 @@ func draw_by_faces(obj: F.Spatial):
 	for face in obj.faces:
 		var old_point = obj.points[face[0]].duplicate()
 		old_point.apply_matrix(projection_matrix)
+		
+		var face_color = get_edge_color()
+		
 		for index in face.slice(1, face.size()):
 			var p = obj.points[index].duplicate()
 			p.apply_matrix(projection_matrix)
-			draw_line(old_point.get_vec2d(), p.get_vec2d(), Color.RED, 0.5, true)
+			draw_line(old_point.get_vec2d(), p.get_vec2d(), face_color, 0.5, true)
 			old_point = p
 		var first_point = obj.points[face[0]].duplicate()
 		first_point.apply_matrix(projection_matrix)
-		draw_line(first_point.get_vec2d(), old_point.get_vec2d(), Color.RED, 0.5, true)
+		draw_line(first_point.get_vec2d(), old_point.get_vec2d(), face_color, 0.5, true)
+
+func get_edge_color() -> Color:
+	var dynamic_color = Color.from_hsv(hue_shift, 0.8, 0.9)
+	
+	return dynamic_color
+
 
 func draw_axis(axis: F.Axis):
 	var isometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
@@ -115,13 +135,13 @@ func _on_option_button_item_selected(index: int) -> void:
 		0: spatial = cube
 		1: spatial = tetrahedron
 		2: spatial = octahedron
-	#	3: spatial = icosahedron
-		#4: spatial = dodecahedron
+		3: spatial = icosahedron
+		4: spatial = dodecahedron
 	queue_redraw()
 
 
 func _on_mirror_ox_pressed() -> void:
-	spatial.miror(-1, 1, 1)
+	spatial.miror(1, 1, -1)
 	queue_redraw()
 
 
@@ -131,7 +151,7 @@ func _on_mirror_oy_pressed() -> void:
 
 
 func _on_mirror_oz_pressed() -> void:
-	spatial.miror(1, 1, -1)
+	spatial.miror(-1, 1, 1)
 	queue_redraw()
 
 
@@ -217,3 +237,9 @@ func _on_option_button_2_item_selected(index: int) -> void:
 	match index:
 		0: projection_matrix = axonometric_matrix
 		1: projection_matrix = perspective_matrix
+	
+	queue_redraw()
+
+
+func _on_check_box_toggled(toggled_on: bool) -> void:
+	is_auto_rotating = toggled_on

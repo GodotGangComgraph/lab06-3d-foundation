@@ -234,7 +234,7 @@ class Spatial:
 	func rotation_about_line(p: Point, vec: Vector3, deg: float):
 		deg = deg_to_rad(deg)
 		vec = vec.normalized()
-
+		
 		var n = vec.z
 		var m = vec.y
 		var l = vec.x
@@ -281,7 +281,7 @@ class Spatial:
 
 class Cube extends Spatial:
 	func _init():
-		var edge_length = 100
+		var edge_length = 150
 		var l = edge_length/2
 
 		points = [
@@ -301,7 +301,7 @@ class Cube extends Spatial:
 
 class Tetrahedron extends Spatial:
 	func _init():
-		var edge_length = 100
+		var edge_length = 150
 		var l = edge_length/2
 
 		points = [
@@ -320,7 +320,7 @@ class Tetrahedron extends Spatial:
 
 class Octahedron extends Spatial:
 	func _init():
-		var edge_length = 100
+		var edge_length = 150
 		var l = edge_length/sqrt(2)
 
 		points = [
@@ -341,6 +341,68 @@ class Octahedron extends Spatial:
 			[0, 3, 5],  
 			[1, 2, 5],  
 			[1, 3, 5]   
+		]
+
+
+class Icosahedron extends Spatial:
+	var l
+	func _init():
+		var edge_length = 150
+		l = edge_length/sqrt(5)
+		
+		points.append(Point.new(0, 0, sqrt(5)/2))
+		
+		for i in range(5):
+			points.append(Point.new(cos(deg_to_rad(i*72)), sin(deg_to_rad(i*72)), 0.5))
+		
+		for i in range(5):
+			points.append(Point.new(cos(deg_to_rad(36+i*72)), sin(deg_to_rad(36+i*72)), -0.5))
+		
+		points.append(Point.new(0, 0, -sqrt(5)/2))
+		
+		scale_about_center(get_middle(), l, l, l)
+		
+		faces = [
+			[0,1,2],	[0,2,3],	[0,3,4],
+			[0,4,5],	[0,5,1],	[10,11,6],
+			[11,7,6],	[11,8,7],	[11,9,8],
+			[11,10,9],	[6,1,10],	[2,6,7],
+			[3,7,8],	[4,8,9],	[5,9,10],
+			[6,2,1],	[7,3,2],	[8,4,3],
+			[9,5,4],	[10,1,5]
+		]
+
+
+class Dodecahedron extends Spatial:
+	func _init():
+		var edge_length = 150
+		var l = edge_length/sqrt(5)*sqrt(2)
+		
+		var icos = Icosahedron.new()
+		l = l/icos.l
+		
+		for face in icos.faces:
+			var p1 = icos.points[face[0]]
+			var p2 = icos.points[face[1]]
+			var p3 = icos.points[face[2]]
+			
+			points.append(Point.new((p1.x+p2.x+p3.x)/3, (p1.y+p2.y+p3.y)/3, (p1.z+p2.z+p3.z)/3))
+		
+		scale_about_center(get_middle(), l, l, l)
+		
+		faces = [
+			[0, 1, 2, 3, 4],
+			[5, 6, 7, 8, 9],
+			[0, 1, 16, 11, 15],
+			[2, 3, 18, 13, 17],
+			[3, 4, 19, 14, 18],
+			[1, 2, 17, 12, 16],
+			[0, 4, 19, 10, 15],
+			[5, 6, 11, 15, 10],
+			[6, 7, 12, 16, 11],
+			[7, 8, 13, 17, 12],
+			[8, 9, 14, 18, 13],
+			[9, 5, 10, 19, 14] 
 		]
 
 class Axis extends Spatial:
