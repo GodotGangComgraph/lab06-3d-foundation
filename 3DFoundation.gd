@@ -283,7 +283,8 @@ class Cube extends Spatial:
 	func _init():
 		var edge_length = 150
 		var l = edge_length/2
-
+		
+		## THIS IS POINTS FROM SPATIAL
 		points = [
 			Point.new(-l, -l, -l),	Point.new(l, -l, -l),
 			Point.new(l, l, -l),		Point.new(-l, l, -l),
@@ -304,6 +305,7 @@ class Tetrahedron extends Spatial:
 		var edge_length = 150
 		var l = edge_length/2
 
+		## THIS IS POINTS FROM SPATIAL
 		points = [
 			Point.new(l, l, l),
 			Point.new(-l, -l, l),
@@ -322,7 +324,8 @@ class Octahedron extends Spatial:
 	func _init():
 		var edge_length = 150
 		var l = edge_length/sqrt(2)
-
+		
+		## THIS IS POINTS FROM SPATIAL
 		points = [
 			Point.new(l, 0, 0),   
 			Point.new(-l, 0, 0),
@@ -350,6 +353,7 @@ class Icosahedron extends Spatial:
 		var edge_length = 150
 		l = edge_length/sqrt(5)
 		
+		## THIS IS POINTS FROM SPATIAL
 		points.append(Point.new(0, 0, sqrt(5)/2))
 		
 		for i in range(5):
@@ -381,6 +385,7 @@ class Dodecahedron extends Spatial:
 		var icos = Icosahedron.new()
 		l = l/icos.l
 		
+		## THIS IS POINTS FROM SPATIAL
 		for face in icos.faces:
 			var p1 = icos.points[face[0]]
 			var p2 = icos.points[face[1]]
@@ -407,12 +412,18 @@ class Dodecahedron extends Spatial:
 
 class Axis extends Spatial:
 	func _init():
-		var l = 100
+		var l = 500
 
-		## THIS IS NOT POINTS FROM SPATIAL
+		## THIS IS POINTS FROM SPATIAL
 		points = [
 			Point.new(0, 0, 0),
 			Point.new(l, 0, 0),
 			Point.new(0, l, 0),
 			Point.new(0, 0, l),
+		]
+		
+		faces = [
+			[0, 1],
+			[0, 2],
+			[0, 3]
 		]

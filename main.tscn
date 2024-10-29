@@ -237,7 +237,6 @@ popup/item_1/id = 1
 
 [node name="CheckBox" type="CheckBox" parent="HBox/MarginContainer2/VBoxContainer"]
 layout_mode = 2
-button_pressed = true
 text = "AUTO ROTATE"
 
 [connection signal="pressed" from="HBox/MarginContainer/Menu/Clear" to="." method="_on_clear_pressed"]

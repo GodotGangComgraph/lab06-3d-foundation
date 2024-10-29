@@ -15,11 +15,11 @@ var axonometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
 var perspective_matrix = F.AffineMatrices.get_perspective_matrix(-300)
 var projection_matrix = axonometric_matrix
 
-var is_auto_rotating = true
+var is_auto_rotating = false
 
 var frame_count = 0
 
-var hue_shift = 0.0
+var hue_shift = 0.2
 var color_speed = 0.1
 
 
@@ -47,10 +47,11 @@ var color_speed = 0.1
 @onready var scale_my: LineEdit = $HBox/MarginContainer/Menu/Scale/my
 @onready var scale_mz: LineEdit = $HBox/MarginContainer/Menu/Scale/mz
 
-@onready var world_center: Vector3 = Vector3(450, 300, 200)
+var world_center: Vector3 = Vector3(450, 300, 0)
 
 func _ready() -> void:
 	cube.translate(world_center.x, world_center.y, world_center.z)
+	axis.translate(world_center.x, world_center.y, world_center.z)
 	tetrahedron.translate(world_center.x, world_center.y, world_center.z)
 	octahedron.translate(world_center.x, world_center.y, world_center.z)
 	icosahedron.translate(world_center.x, world_center.y, world_center.z)
@@ -60,7 +61,7 @@ func _ready() -> void:
 	#	print(point)
 		
 	#dodecahedron.translate(200, 0, 0)
-	Engine.max_fps = 20
+	Engine.max_fps = 60
 
 
 func _process(delta: float) -> void:
@@ -75,6 +76,7 @@ func _process(delta: float) -> void:
 	
 	queue_redraw()
 
+## LEGACY
 func draw_object(obj: F.Spatial):
 	for edge in obj.edges:
 		var p1: F.Point = obj.points[edge.x].duplicate()
@@ -101,27 +103,26 @@ func draw_by_faces(obj: F.Spatial):
 		first_point.apply_matrix(projection_matrix)
 		draw_line(first_point.get_vec2d(), old_point.get_vec2d(), face_color, 0.5, true)
 
+func draw_axes():
+	var colors = [Color.RED, Color.GREEN, Color.BLUE]
+	for i in range(3):
+		var p1: F.Point = axis.points[axis.faces[i][0]].duplicate()
+		var p2: F.Point = axis.points[axis.faces[i][1]].duplicate()
+		p1.apply_matrix(projection_matrix)
+		p2.apply_matrix(projection_matrix)
+		draw_line(p1.get_vec2d(), p2.get_vec2d(), colors[i], 0.5, true)
+		draw_line(p1.get_vec2d(), p1.get_vec2d()-(p2.get_vec2d() - p1.get_vec2d()), colors[i], 0.5, true)
+		
 func get_edge_color() -> Color:
 	var dynamic_color = Color.from_hsv(hue_shift, 0.8, 0.9)
 	
 	return dynamic_color
 
-
-func draw_axis(axis: F.Axis):
-	var isometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
-	for edge in axis.edges:
-		var p1 = axis.points[edge.x].duplicate()
-		var p2 = axis.points[edge.y].duplicate()
-		
-		p1.apply_matrix(isometric_matrix)
-		p2.apply_matrix(isometric_matrix)
-		
-		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.GREEN, 0.5, true)
-
 var p1_line: F.Point = F.Point.new(0, 0, 0)
 var p2_line: F.Point = F.Point.new(0, 0, 0)
 
 func _draw():
+	draw_axes()
 	draw_by_faces(spatial)
 	draw_line(p1_line.get_vec2d(), p2_line.get_vec2d(), Color.BLUE)
 	#draw_axis(axis)
@@ -141,17 +142,23 @@ func _on_option_button_item_selected(index: int) -> void:
 
 
 func _on_mirror_ox_pressed() -> void:
+	spatial.translate(-world_center.x, -world_center.y, -world_center.z)
 	spatial.miror(1, 1, -1)
+	spatial.translate(world_center.x, world_center.y, world_center.z)
 	queue_redraw()
 
 
 func _on_mirror_oy_pressed() -> void:
+	spatial.translate(-world_center.x, -world_center.y, -world_center.z)
 	spatial.miror(1, -1, 1)
+	spatial.translate(world_center.x, world_center.y, world_center.z)
 	queue_redraw()
 
 
 func _on_mirror_oz_pressed() -> void:
+	spatial.translate(-world_center.x, -world_center.y, -world_center.z)
 	spatial.miror(-1, 1, 1)
+	spatial.translate(world_center.x, world_center.y, world_center.z)
 	queue_redraw()
 
 
@@ -168,7 +175,6 @@ func _on_apply_rot_pressed() -> void:
 
 func _on_apply_rot_center_pressed() -> void:
 	var vec = spatial.get_middle()
-	vec.translate(world_center.x, world_center.y, world_center.z)
 	spatial.rotation_about_center(vec, float(rotate_ox.text), float(rotate_oy.text), float(rotate_oz.text))
 	queue_redraw()
 
@@ -235,9 +241,12 @@ func _on_apply_rotate_line_pressed() -> void:
 
 func _on_option_button_2_item_selected(index: int) -> void:
 	match index:
-		0: projection_matrix = axonometric_matrix
-		1: projection_matrix = perspective_matrix
-	
+		0: 
+			projection_matrix = axonometric_matrix
+			#world_center = world_center_axonometric
+		1: 
+			projection_matrix = perspective_matrix
+			#world_center = world_center_perspective
 	queue_redraw()
 
 
