@@ -6,10 +6,15 @@ var edge_length = 100
 var cube = F.Cube.new()
 var tetrahedron = F.Tetrahedron.new()
 var octahedron = F.Octahedron.new()
-var icosahedron = F.Icosahedron.new()
+#var icosahedron = F.Icosahedron.new()
 #var dodecahedron = F.Dodecahedron.new()
 var axis = F.Axis.new()
 var spatial = cube
+
+var axonometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
+var perspective_matrix = F.AffineMatrices.get_perspective_matrix(-300)
+var projection_matrix = axonometric_matrix
+
 
 var frame_count = 0
 
@@ -43,10 +48,10 @@ func _ready() -> void:
 	
 	cube.translate(world_center.x, world_center.y, world_center.z)
 	tetrahedron.translate(world_center.x, world_center.y, world_center.z)
-	octahedron.translate(world_center.x * 3 / 4,  world_center.y * 3 / 4, world_center.z * 3 / 4)
-	icosahedron.translate(100, 0, 0)
-	for point in icosahedron.points:
-		print(point)
+	octahedron.translate(world_center.x, world_center.y, world_center.z)
+	#icosahedron.translate(100, 0, 0)
+	#for point in icosahedron.points:
+	#	print(point)
 		
 	#dodecahedron.translate(200, 0, 0)
 	Engine.max_fps = 20
@@ -54,11 +59,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	#return
-	#if (frame_count > 100):
-	#	return
-	#frame_count += 1
 	var vec = spatial.get_middle()
-	vec.translate(world_center.x, world_center.y, world_center.z)
 	spatial.rotation_about_center(vec, 1, 1, 1)
 	
 	queue_redraw()
@@ -68,13 +69,23 @@ func draw_object(obj: F.Spatial):
 		var p1: F.Point = obj.points[edge.x].duplicate()
 		var p2: F.Point = obj.points[edge.y].duplicate()
 		
-		var axonometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
-		
-		p1.apply_matrix(axonometric_matrix)
-		p2.apply_matrix(axonometric_matrix)
+		p1.apply_matrix(projection_matrix)
+		p2.apply_matrix(projection_matrix)
 		
 		draw_line(p1.get_vec2d(), p2.get_vec2d(), Color.RED, 0.5, true)
 
+func draw_by_faces(obj: F.Spatial):
+	for face in obj.faces:
+		var old_point = obj.points[face[0]].duplicate()
+		old_point.apply_matrix(projection_matrix)
+		for index in face.slice(1, face.size()):
+			var p = obj.points[index].duplicate()
+			p.apply_matrix(projection_matrix)
+			draw_line(old_point.get_vec2d(), p.get_vec2d(), Color.RED, 0.5, true)
+			old_point = p
+		var first_point = obj.points[face[0]].duplicate()
+		first_point.apply_matrix(projection_matrix)
+		draw_line(first_point.get_vec2d(), old_point.get_vec2d(), Color.RED, 0.5, true)
 
 func draw_axis(axis: F.Axis):
 	var isometric_matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
@@ -91,19 +102,9 @@ var p1_line: F.Point = F.Point.new(0, 0, 0)
 var p2_line: F.Point = F.Point.new(0, 0, 0)
 
 func _draw():
-	draw_object(spatial)
+	draw_by_faces(spatial)
 	draw_line(p1_line.get_vec2d(), p2_line.get_vec2d(), Color.BLUE)
 	#draw_axis(axis)
-
-
-func _on_apply_pressed() -> void:
-	spatial.rotation_about_y(float(rotate_oy.text))
-	spatial.rotation_about_z(float(rotate_oz.text))
-	spatial.rotate_about_center(float(rotate_ox.text))
-	spatial.scale_(float(scale_mx.text), float(scale_my.text), float(scale_mz.text))
-	
-	queue_redraw()
-
 
 func _on_clear_pressed() -> void:
 	get_tree().reload_current_scene()
@@ -114,7 +115,7 @@ func _on_option_button_item_selected(index: int) -> void:
 		0: spatial = cube
 		1: spatial = tetrahedron
 		2: spatial = octahedron
-		3: spatial = icosahedron
+	#	3: spatial = icosahedron
 		#4: spatial = dodecahedron
 	queue_redraw()
 
@@ -186,7 +187,6 @@ func _on_apply_scale_center_pressed() -> void:
 	var my: float = vec3.y
 	var mz: float = vec3.z
 	var vec = spatial.get_middle()
-	vec.translate(world_center.x, world_center.y, world_center.z)
 	spatial.scale_about_center(vec, mx, my, mz)
 	queue_redraw()
 
@@ -211,3 +211,9 @@ func _on_apply_rotate_line_pressed() -> void:
 	p.translate(world_center.x, world_center.y, world_center.z)
 	spatial.rotation_about_line(p, line, float(deg.text))
 	queue_redraw()
+
+
+func _on_option_button_2_item_selected(index: int) -> void:
+	match index:
+		0: projection_matrix = axonometric_matrix
+		1: projection_matrix = perspective_matrix
