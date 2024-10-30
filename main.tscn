@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://ewyokg4i0jk2"]
+[gd_scene load_steps=6 format=3 uid="uid://ewyokg4i0jk2"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_mkuq4"]
 [ext_resource type="PackedScene" uid="uid://dfj5u8qg8ciqa" path="res://line_edit.tscn" id="2_4ej14"]
+[ext_resource type="Shader" path="res://main.gdshader" id="2_ud4us"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_70vrq"]
+shader = ExtResource("2_ud4us")
+shader_parameter/bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q322o"]
+shader = ExtResource("2_ud4us")
+shader_parameter/bg_color = null
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -12,7 +21,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mkuq4")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+material = SubResource("ShaderMaterial_70vrq")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="HBox" type="HBoxContainer" parent="."]
+material = SubResource("ShaderMaterial_q322o")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
