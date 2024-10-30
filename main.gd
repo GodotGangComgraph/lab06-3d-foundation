@@ -61,7 +61,6 @@ func _ready() -> void:
 	#	print(point)
 		
 	#dodecahedron.translate(200, 0, 0)
-	Engine.max_fps = 60
 
 
 func _process(delta: float) -> void:
@@ -72,7 +71,7 @@ func _process(delta: float) -> void:
 	hue_shift = fmod(hue_shift, 1.0)
 	
 	var vec = spatial.get_middle()
-	spatial.rotation_about_center(vec, 1, 1, 1)
+	spatial.rotation_about_center(vec, 0.5, 0.5, 0.5)
 	
 	queue_redraw()
 
@@ -203,7 +202,9 @@ func _on_apply_scale_pressed() -> void:
 	var my: float = vec3.y
 	var mz: float = vec3.z
 	
+	spatial.translate(-world_center.x, -world_center.y, -world_center.z)
 	spatial.scale_(mx, my, mz)
+	spatial.translate(world_center.x, world_center.y, world_center.z)
 	queue_redraw()
 
 
@@ -225,17 +226,20 @@ func _on_apply_rotate_line_pressed() -> void:
 	var y2 = float(rotate_line_y_2.text)
 	var z2 = float(rotate_line_z_2.text)
 	
+	var line: Vector3 = Vector3(x2-x1, y2-y1, z2-z1)
+	var p: F.Point = F.Point.new(x1, y1, z1)
+	p.translate(world_center.x, world_center.y, world_center.z)
+	spatial.rotation_about_line(p, line, float(deg.text))
+	
 	p1_line = F.Point.new(x1, y1, z1)
 	p2_line= F.Point.new(x2, y2, z2)
+	p1_line.translate(world_center.x, world_center.y, world_center.z)
+	p2_line.translate(world_center.x, world_center.y, world_center.z)
 	
 	var matrix = F.AffineMatrices.get_axonometric_matrix(35.26, 45)
 	p1_line.apply_matrix(matrix)
 	p2_line.apply_matrix(matrix)
 	
-	var line: Vector3 = Vector3(x2-x1, y2-y1, z2-z1)
-	var p: F.Point = F.Point.new(x1, y1, z1)
-	p.translate(world_center.x, world_center.y, world_center.z)
-	spatial.rotation_about_line(p, line, float(deg.text))
 	queue_redraw()
 
 

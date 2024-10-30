@@ -232,6 +232,7 @@ class Spatial:
 		translate(p.x, p.y, p.z)
 
 	func rotation_about_line(p: Point, vec: Vector3, deg: float):
+		translate(-p.x, -p.y, -p.z)
 		deg = deg_to_rad(deg)
 		vec = vec.normalized()
 		
@@ -241,6 +242,7 @@ class Spatial:
 		var d = sqrt(m * m + n * n)
 		var matrix = AffineMatrices.get_line_rotate_matrix(l, m, n, sin(deg), cos(deg))
 		apply_matrix(matrix)
+		translate(p.x, p.y, p.z)
 		## Попытка реализовать это преобразование цепочкой простых пр-ий :(
 	'''	translate(-p.x, -p.y, -p.z)
 
